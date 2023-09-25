@@ -1,23 +1,13 @@
-# litc-base-line-hardening
+# ChefConf23 Extensibility Example
 
-This cookbook implements the SAP Security Baseline hardening guidelines for Windows.
-
-Please refer to the [core guidelines](https://wiki.wdf.sap.corp/wiki/display/itsec/Operating+System+Hardening+Procedure?src=sidebar)
-as well as the [Windows](https://wiki.wdf.sap.corp/wiki/display/itsec/Windows+Server+Hardening+Procedure?src=sidebar) specific policies.
-
-This cookbook DOES NOT implement ANY customer specific logic.  All custom functionality
-must be implemented in a wrapper cookbook.
-
-**NOTE** As of version 3.0, this cookbook no longer supports Linux.  Please use the Golden Images provided by the
-MultiCloud network secuity team, or the Ansible playbooks that they have developed.
-See [Golden-Images](https://github.tools.sap/mc-network-security/Golden-Images) for details.
+This cookbook supplies the code that accompanies the ChefConf presentation on extending Chef infra cookbooks.
 
 ## Dependencies
 This cookbook has no external dependecies.
 
 ## Supported OS
 * Windows Server
-  * 2012
+  * 2012ad_vulnerabilies
   * 2012 R2
   * 2016
   * 2019
@@ -35,6 +25,14 @@ about the compliance status of the system.
 The polices that have been implimented are only accurate at the time of this writing.  The SAP Security team
 may change the guidlines at any time without warning or notification.  It is the server owner's responsibility
 to ensure the security of their system.
+
+### BW1-00-02
+Separation of duties and purposes
+* OHAI: node['hardening']['BW1-00-02']
+  * `compliant`: bool check to see if the system is compliant with the policy
+  * `offenses`: String explaining how the policy is being violated
+  * `desired_roles`: Array of which special roles are to remain installed
+  * `undesired_roles`: Array of roles/features that are to be removed
 
 ## Usage
 ### Attributes
@@ -54,27 +52,13 @@ Wherever possible, information about the policies complinace will be logged.
   * No resonable way to enforce the domain join. Non-compliance logs a Warning.
 * BW 1.00.02 Separation of duties and purposes
   * We cannot resonably _remove_ server roles that are potentially serving production use-cases.  Offences log a Warning.
-* BW 1.10.01 Minimal number of administrative accounts
-  * The Security threshold is 8, however removing active users from the admin group could affect
-  production, support and maintainence activities. Non-Compliance logs a Warning.
-* BW 1.10.02 Service accounts with administrative privileges
-  * As above, removing admin accounts could have a negative impact. Non-Compliance logs a Warning.
-* BW 1.40.01  Install and configure anti-virus software on the server
-  * Given the unknown different variations of software repositories, we can't assume to install a specific AV software.
-  * We can check that one _is_ installed, and log a Waarning if it isn't.
-* BW 1.50.01 Implement appropriate patch management
-  * While we cannot force patching as this could generate a restart of a critical server, we'll log if the
-  latest updates are older than a week. 
 
 ### Destructive Policies
+ 
+* BW 1.00.02 Separation of duties and purposes
+  * For the purpose of the demonstration, we will be writing code that intends to remove roles/features.
+  * This would be highly destructive, and not suitable for a production envronment!
 
-* BW 1.10.03 Default OS accounts
-  * This recipe **WILL RENAME** the `Administrator` and `Guest` accounts.
-  * Thie behavior is configurable by setting the `production` attribute.
-* BW 1.60.01 Configure secure permissions on network shares
-  * This will **DISABLE** open shares (ones with `Everyone` access).
-  * Thie behavior is configurable by setting the `production` attribute.
-  * Additional user/group access needs to be autdited by a person with knowledge of the system requirements.
 
 ## Contributing
 
@@ -90,8 +74,6 @@ Wherever possible, information about the policies complinace will be logged.
 
 ### Authors
 
-* [Juan Martinez](Juan.Martinez@sap.com)
-* [Rosen Rusev](Rosen.Rusev@sap.com)
 * [Dan-Joe Loepz](Dan-Joe.Loepz@sap.com)
 
 ### License
@@ -101,5 +83,4 @@ distribution.
 
 ## Support
 
-If you need help with this cookbook, please raise an issue in Jira on project [ADC (Automation DevOps CoE)](https://sapjira.wdf.sap.corp/secure/CreateIssue!default.jspa),
-or raise an [issue on git](https://github.wdf.sap.corp/LIT-DEVOPS/litc-example/issues/new).
+If you need help with this cookbook, please raise an [issue on git](https://github.com/SAPDanJoe/ChefConf-23/issues/new).

@@ -9,6 +9,11 @@
 # All rights reserved - Do Not Redistribute
 #
 
+bw1_00_02 'Ensure overlapping duties and purpose compliance' do
+  policy_state node['hardening'][recipe_name]
+  action :enforce
+end
+
 # This policy is not enforcable by automation, we we can issue some checks and
 # logging about it for transparency.
 
